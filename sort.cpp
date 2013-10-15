@@ -81,16 +81,6 @@ template <class T>
     { if (B < A) {exch(A, B); S++;} }
 // Išrinkimo algoritmo realizacija
 template <class T>
-/*
-void selection(T a[], int l, int r)
-  { for (int i = l; i < r; i++)
-      { int min = i;
-        for (int j = i+1; j <= r; j++)
-            if (a[j] < a[min]) min = j;
-        exch(a[i], a[min]);
-      }
-  }
-  */
 
   void selection(T a[], int l, int r, int &L, int &S)
   {
