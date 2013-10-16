@@ -6,13 +6,16 @@ template <class T> void compexch(T &, T &, int&);
 template<class T> void selection(T *, int, int, int&, int&);
 template <class T> void insertion(T *, int, int, int&, int&);
 template <class T> void bubble( T *, int, int, int&, int&);
+template <class T> void shiftRight(T *, int, int, int&, int& );
+template <class T> void heapify(T *, int, int, int&, int&);
+template <class T> void heapSort(T *, int, int, int&, int&);
 using namespace std;
 int main(int argc, char *argv[])
 {
     //int i, N = atoi(argv[1]), KaDaryt = atoi(argv[2]);
     int N=1000;
     int *a = new int[N];
-    int i,v,s,r;
+    int j,i,v,s,r;
     int L=0, S=0;
    // int * op;
    // Op = &L;
@@ -21,10 +24,12 @@ int main(int argc, char *argv[])
     cin>>s;
     if(s==1)
     {
+            j=0;
         cout<<"Pirmas variantas"<<endl;
         for (i = N-1; i >= 0; i--)
                  {
-                      a[i] = i;
+                      a[j] = i;
+                      j++;
                  }
     }
     else if(s==2)
@@ -57,12 +62,13 @@ int main(int argc, char *argv[])
     for (i = 0; i < N; i++) 
     {cout << a[i] << " "; }
     cout << endl;
-    cout<<"Parinkite rikiavimo algoritma [isrinkimo](1),[iterpimo](2),[burbulo](3): ";
+    cout<<"Parinkite rikiavimo algoritma [isrinkimo](1),[iterpimo](2),[burbulo](3), [rusiavimo](4): ";
     cin>>r;
     if(r==1) selection(a,0,N-1,L,S);
     else if(r==2) insertion(a,0,N-1,L,S);
         else if (r==3) bubble(a,0,N-1,L,S);
-        else cout<<"Neteisingai nurodytas rusiavimo budas"<< endl;
+             else if (r==4) heapSort(a,0,N-1,L,S);
+                  else cout<<"Neteisingai nurodytas rusiavimo budas"<< endl;
       
     cout << "Surusiuotas skaiciu masyvas yra:" << endl;
     for (i = 0; i < N; i++) cout << a[i] << " ";
@@ -70,6 +76,7 @@ int main(int argc, char *argv[])
     cout << "Rusiuodamas algoritmas atlykto "<<S<<" lyginimo ir "<<L<<" sukeitimo operaciju:" << endl;
     cin>>r;
     cout << endl;
+    return 0;
 }
 // Sukeičia elementus vietomis
 template <class T>
@@ -129,4 +136,61 @@ void bubble(T a[], int l, int r, int &L, int &S)
             L++;
         }
   }
-
+//-------------------------------------------------------
+template <class T>
+void shiftRight(T a[], int l, int r, int &L, int &S)
+{
+   ++S;
+    while ((l*2)+1 <= r)
+    {
+        int leftChild = (l * 2) + 1;
+        int rightChild = leftChild + 1;
+        int swapIdx = l;
+        ++S;
+        if (a[swapIdx] < a[leftChild])
+        {
+            swapIdx = leftChild;
+        }
+        if ((rightChild <= r) && (a[swapIdx] < a[rightChild]))
+        {
+            swapIdx = rightChild;
+        }
+        if (swapIdx != l)
+        {
+            exch(a[l],a[swapIdx]); 
+            l = swapIdx;
+            ++L;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return;
+}
+template <class T>
+void heapify(T a[], int l, int r, int &L, int &S)
+{
+    int midIdx = (r-1)/2;
+    while (midIdx >= 0)
+    {
+        shiftRight(a, midIdx, r,L,S);
+        --midIdx;
+    }
+    return;
+}
+template <class T>
+void heapSort(T a[], int l, int r, int &L, int &S)
+{
+    assert(a);
+    assert(r > 0);
+    heapify(a, 0, r,L,S);
+    while (r > 0)
+    {
+          exch(a[r],a[0]); 
+          --r;
+          shiftRight(a, 0, r,L,S);
+    }
+    return;
+}
+//-------------------------------------------------------------
