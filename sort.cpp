@@ -1,21 +1,37 @@
 #include <iostream>
 #include <stdlib.h>
 
+
 template <class T> void exch(T &, T &);
 template <class T> void compexch(T &, T &, int&);
 template<class T> void selection(T *, int, int, int&, int&);
 template <class T> void insertion(T *, int, int, int&, int&);
 template <class T> void bubble( T *, int, int, int&, int&);
+//-----------------------
 template <class T> void shiftRight(T *, int, int, int&, int& );
 template <class T> void heapify(T *, int, int, int&, int&);
 template <class T> void heapSort(T *, int, int, int&, int&);
+//-----------------------
+template <class T> int partition(T * , int, int, int&, int&);
+template <class T> void quicksort(T * , int, int, int&, int&);
+//-----------------------
+template <class T> void mergesort(T *,T *, int, int , int&, int&);
+template <class T> void merge(T *,T *, int, int, int, int&, int&);
+
+//-----------------------
 using namespace std;
 int main(int argc, char *argv[])
 {
     //int i, N = atoi(argv[1]), KaDaryt = atoi(argv[2]);
     int N=1000;
-    int *a = new int[N];
+
     int j,i,v,s,r;
+    bool t=false;
+    char ts;
+    while(t==false)
+    {
+    int *a = new int[N];
+    int *b = new int[N];
     int L=0, S=0;
    // int * op;
    // Op = &L;
@@ -62,19 +78,25 @@ int main(int argc, char *argv[])
     for (i = 0; i < N; i++) 
     {cout << a[i] << " "; }
     cout << endl;
-    cout<<"Parinkite rikiavimo algoritma [isrinkimo](1),[iterpimo](2),[burbulo](3), [rusiavimo](4): ";
+    cout<<"Parinkite rikiavimo algoritma [isrinkimo](1),[iterpimo](2),[burbulo](3), [kruvos)](4), [salajos)](5),[spartusis](6): ";
     cin>>r;
     if(r==1) selection(a,0,N-1,L,S);
     else if(r==2) insertion(a,0,N-1,L,S);
         else if (r==3) bubble(a,0,N-1,L,S);
              else if (r==4) heapSort(a,0,N-1,L,S);
+                  else if (r==5) quicksort(a,0,N-1,L,S);
+                       else if (r==6) mergesort(a,b,0,N-1,L,S);
                   else cout<<"Neteisingai nurodytas rusiavimo budas"<< endl;
       
     cout << "Surusiuotas skaiciu masyvas yra:" << endl;
     for (i = 0; i < N; i++) cout << a[i] << " ";
     cout << endl;
     cout << "Rusiuodamas algoritmas atlykto "<<S<<" lyginimo ir "<<L<<" sukeitimo operaciju:" << endl;
-    cin>>r;
+    cout << "Ar dar karta rusiuosit? y/(betkoks) : ";
+    cin>>ts;
+    if(ts=='y'){t=false;}else {t=true;}
+}
+    //cin>>r;
     cout << endl;
     return 0;
 }
@@ -136,6 +158,110 @@ void bubble(T a[], int l, int r, int &L, int &S)
             L++;
         }
   }
+//-------------------------------------------------------  
+//Spartuji rušiavimo algoritma (angla quick sort).
+//-------------------------------------------------------
+// The partition function
+template <class T>
+int partition(T a[], int l, int r, int &L, int &S)
+{
+    int pivot = a[r];
+
+    while ( l < r )
+    {
+        while ( a[l] < pivot )
+            l++;
+
+        while ( a[r] > pivot )
+            r--;
+
+        if ( a[l] == a[r] )
+            l++;
+        else if ( l < r )
+        { 
+            int tmp = a[l];
+            a[l] = a[r];
+            a[r] = tmp;
+            L++;
+        }
+        S++;
+    }
+    return r;
+}
+
+// The quicksort recursive function
+template <class T>
+void quicksort(T a[], int l, int r, int &L, int &S )
+{
+    if ( l < r )
+    {
+        int j = partition(a, l, r,L,S);        
+        quicksort(a, l, j-1,L,S);
+        quicksort(a, j+1, r,L,S);
+    }
+}
+//-------------------------------------------------------
+//Suliejimo(salajos) rušiavimo algoritma (angl. merge sort).
+//-------------------------------------------------------
+template <class T>
+void mergesort(T a[],T b[], int l, int r, int &L, int &S)
+{
+    int pivot;
+    if(l<r)
+    {
+        pivot=(l+r)/2;
+        mergesort(a,b,l,pivot,L,S);
+        mergesort(a,b,pivot+1,r,L,S);
+        merge(a,b,l,pivot,r,L,S);
+    }
+}
+template <class T>
+void merge(T a[],T b[], int l, int pivot, int r, int &L, int &S)
+{
+    int h,i,j,k;
+    h=l;
+    i=l;
+    j=pivot+1;
+
+    while((h<=pivot)&&(j<=r))
+    {
+        if(a[h]<=a[j])
+        {
+            b[i]=a[h];
+            h++;
+            
+        }
+        else
+        {
+            b[i]=a[j];
+            j++;
+            L++;
+        }
+        S++;
+        i++;
+    }
+    if(h>pivot)
+    {
+        for(k=j; k<=r; k++)
+        {
+            b[i]=a[k];
+            i++;
+        }
+    }
+    else
+    {
+        for(k=h; k<=pivot; k++)
+        {
+            b[i]=a[k];
+            i++;
+        }
+        
+    }
+    S++;
+    for(k=l; k<=r; k++) a[k]=b[k];
+}
+//-------------------------------------------------------
+//Piramidini (kruvos) rušiavimo algoritma (angl. heap sort)
 //-------------------------------------------------------
 template <class T>
 void shiftRight(T a[], int l, int r, int &L, int &S)
@@ -194,3 +320,6 @@ void heapSort(T a[], int l, int r, int &L, int &S)
     return;
 }
 //-------------------------------------------------------------
+//-------------------------------------------------------------
+
+
